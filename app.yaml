@@ -1,0 +1,62 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: helidon-atp
+  labels:
+    app: helidon-atp
+spec:
+  type: NodePort
+  selector:
+    app: helidon-atp
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: http
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: helidon-atp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: helidon-atp
+  template:
+    metadata:
+      labels:
+        app: helidon-atp
+        version: v1
+    spec:
+    containers:
+    - name: helidon-atp
+      image: iad.ocir.io/orasejapan/helidon-atp
+      imagePullPolicy: Always
+      ports:
+        - containerPort: 8080
+      env:
+      - name: atp.db.tnsNetServiceName
+        valueFrom:
+          secretKeyRef:
+            name: atp-secret
+            key: tnsNetServiceName
+      - name: atp.db.user
+        valueFrom:
+          secretKeyRef:
+            name: atp-secret
+            key: user
+      - name: atp.db.password
+        valueFrom:
+          secretKeyRef:
+            name: atp-secret
+            key: password
+      - name: oci.properties.atp-ocid
+        valueFrom:
+          secretKeyRef:
+            name: atp-secret
+            key: atp-ocid
+      - name: oci.properties.atp-walletPassword
+        valueFrom:
+          secretKeyRef:
+            name: atp-secret
+            key: atp-walletPassword
