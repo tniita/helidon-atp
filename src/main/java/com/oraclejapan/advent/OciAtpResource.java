@@ -21,7 +21,7 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
-import com.oracle.bmc.database.Database;
+import com.oracle.bmc.database.DatabaseClient;
 import com.oracle.bmc.database.model.GenerateAutonomousDatabaseWalletDetails;
 import com.oracle.bmc.database.requests.GenerateAutonomousDatabaseWalletRequest;
 import com.oracle.bmc.database.responses.GenerateAutonomousDatabaseWalletResponse;
@@ -40,7 +40,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 public class OciAtpResource {
     private static final Logger LOGGER = Logger.getLogger(OciAtpResource.class.getName());
 
-    private final Database databaseClient;
+    private final DatabaseClient databaseClient;
     private final PoolDataSource atpDataSource;
     private final String atpTnsNetServiceName;
 
@@ -48,7 +48,7 @@ public class OciAtpResource {
     private final String walletPassword;
 
     @Inject
-    OciAtpResource(Database databaseClient, @Named("atp") PoolDataSource atpDataSource,
+    OciAtpResource(DatabaseClient databaseClient, @Named("atp") PoolDataSource atpDataSource,
                 @ConfigProperty(name = "oracle.ucp.jdbc.PoolDataSource.atp.tnsNetServiceName") String atpTnsNetServiceName,
                 @ConfigProperty(name = "oci.atp.ocid") String atpOcid,
                 @ConfigProperty(name = "oci.atp.walletPassword") String walletPassword) {
